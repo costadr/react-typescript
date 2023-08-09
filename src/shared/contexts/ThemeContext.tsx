@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import { Box, ThemeProvider } from "@mui/material";
-import { DarkTheme, LightTheme } from "./../themes";
+import { Box, ThemeProvider } from '@mui/material';
+import { DarkTheme, LightTheme } from './../themes';
+
 
 interface IThemeContextData {
   themeName: 'light' | 'dark';
@@ -11,14 +12,13 @@ const ThemeContext = createContext({} as IThemeContextData);
 
 export const useAppThemeContext = () => {
   return useContext(ThemeContext);  // hook personalizado
-}
-
+};
 
 interface IThemeProviderProps {
   children: React.ReactNode;
 }
 
-export const AppThemeProvider: React.FC<IThemeProviderProps> = ({children}) => {
+export const AppThemeProvider: React.FC<IThemeProviderProps> = ({ children }) => {
   const [themeName, setThemeName] = useState<'light' | 'dark'>('light');
 
   const toogleTheme = useCallback(() => {
@@ -40,4 +40,4 @@ export const AppThemeProvider: React.FC<IThemeProviderProps> = ({children}) => {
       </ThemeProvider>
     </ThemeContext.Provider>
   );
-}
+};
