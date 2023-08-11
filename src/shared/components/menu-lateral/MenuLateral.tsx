@@ -1,6 +1,6 @@
 import { Avatar, Divider, Drawer, Icon, List, ListItemButton, ListItemIcon, ListItemText, useMediaQuery, useTheme } from '@mui/material';
 import { Box } from '@mui/system';
-import { useDrawerContext } from '../../contexts';
+import { useAppThemeContext, useDrawerContext } from '../../contexts';
 import React from 'react';
 import { useMatch, useNavigate, useResolvedPath } from 'react-router-dom';
 
@@ -43,6 +43,7 @@ export const MenuLateral: React.FC<IMenuLateralProps> = ({ children }) => {
   const smDown = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { isDrawerOpen, toogleDrawerOpen, drawerOptions } = useDrawerContext();
+  const { toogleTheme } = useAppThemeContext();
   
   return(
     <>
@@ -70,9 +71,17 @@ export const MenuLateral: React.FC<IMenuLateralProps> = ({ children }) => {
                   onClick={smDown ? toogleDrawerOpen : undefined}
                 />
               ))}
+            </List>
+          </Box>
 
-              
-              
+          <Box>
+            <List component="nav">
+              <ListItemButton onClick={toogleTheme}>
+                <ListItemIcon>
+                  <Icon>dark_mode</Icon>
+                </ListItemIcon>
+                <ListItemText primary="Alternar tema" />
+              </ListItemButton>
             </List>
           </Box>
 

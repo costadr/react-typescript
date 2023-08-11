@@ -3,6 +3,7 @@ import { cyan, yellow } from '@mui/material/colors';
 
 export const DarkTheme = createTheme({
   palette: {
+    mode: 'dark',
     primary: {
       main: yellow[700],
       dark: yellow[800],
@@ -21,25 +22,30 @@ export const DarkTheme = createTheme({
     }
   },
   typography: {
-    fontFamily: 'Roboto',
-    body1: {
-      color: '#ffffff', // Set font color to white for body1 text
-    },
-    body2: {
-      color: '#ffffff', // Set font color to white for body2 text
-    },
-    h1: {
-      color: '#ffffff', // Set font color to white for h1 text
-    },
-    // Repeat for h2, h3, h4, h5, and h6
-  },
-  components: {
-    MuiIcon: {
-      styleOverrides: {
-        root: {
-          color: '#ffffff', // Set font color to white for Material-UI icons
-        },
-      },
-    },
-  },
+    allVariants: {
+      color: 'white',
+    }
+  }
+  // typography: {
+  //   fontFamily: 'Roboto',
+  //   body1: {
+  //     color: '#ffffff', // Set font color to white for body1 text
+  //   },
+  //   body2: {
+  //     color: '#ffffff', // Set font color to white for body2 text
+  //   },
+  //   h1: {
+  //     color: '#ffffff', // Set font color to white for h1 text
+  //   },
+  //   // Repeat for h2, h3, h4, h5, and h6
+  // },
+  // components: {
+  //   MuiIcon: {
+  //     styleOverrides: {
+  //       root: {
+  //         color: '#ffffff', // Set font color to white for Material-UI icons
+  //       },
+  //     },
+  //   },
+  // },
 });
