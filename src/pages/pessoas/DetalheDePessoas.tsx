@@ -1,16 +1,25 @@
 // import { LinearProgress } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Form } from '@unform/web';
+import { FormHandles } from '@unform/core';
 
 import { FerramentasDeDetalhe } from '../../shared/components';
 import { LayoutBaseDePagina } from '../../shared/layouts';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PessoasService } from '../../shared/services/api/pessoas/PessoasService';
 import { VTextField } from '../../shared/forms';
+
+interface IFormData {
+  email: string;
+  cidadeId: string;
+  nomeCompleto: string;
+}
 
 export const DetalheDePessoas: React.FC = () => {
   const { id = 'nova' } = useParams<'id'>();
   const navigate = useNavigate();
+
+  const formRef = useRef<FormHandles>(null);
 
   const [, setIsLoading] = useState(false);
   const [nome, setNome] = useState('');
@@ -34,8 +43,8 @@ export const DetalheDePessoas: React.FC = () => {
     }
   }, [id]);
 
-  const handleSave = () => {
-    console.log('Save');
+  const handleSave = (dados: IFormData) => {
+    console.log(dados);
   };
 
   const handleDelete = (id: number) => {
@@ -62,8 +71,8 @@ export const DetalheDePessoas: React.FC = () => {
           mostrarBotaoNovo={id !== 'nova'}
           mostrarBotaoApagar={id !== 'nova'}
 
-          aoClicarEmSalvar={handleSave}
-          aoClicarEmSalvarEFechar={handleSave}
+          aoClicarEmSalvar={() => formRef.current?.submitForm()}
+          aoClicarEmSalvarEFechar={() => formRef.current?.submitForm()}
           aoClicarEmVoltar={() => navigate('/pessoas')}
           aoClicarEmApagar={() => handleDelete(Number(id))}
           aoClicarEmNovo={() => navigate('/pessoas/detalhe/nova')}
@@ -74,11 +83,10 @@ export const DetalheDePessoas: React.FC = () => {
         <LinearProgress variant='indeterminate'/>
       )} */}
 
-      <Form onSubmit={(dados) => console.log(dados)}>
-
+      <Form ref={formRef} onSubmit={handleSave}>
         <VTextField name='nomeCompleto' />
-
-        <button type='submit'>Submit</button>
+        <VTextField name='email' />
+        <VTextField name='cidadeId' />
 
       </Form>
 
