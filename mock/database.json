@@ -2,15 +2,15 @@
   "pessoas": [
     {
       "id": 1,
-      "cidadeId": 1,
+      "nomeCompleto": "Juca Silva 4444",
       "email": "juca@gmail.com",
-      "nomeCompleto": "Juca Silva"
+      "cidadeId": 1
     },
     {
       "id": 4,
-      "cidadeId": 1,
+      "nomeCompleto": "Pedro Silva",
       "email": "pedro@gmail.com",
-      "nomeCompleto": "Pedro Silva"
+      "cidadeId": 1
     },
     {
       "id": 5,
@@ -71,6 +71,12 @@
       "cidadeId": 1,
       "email": "douglas@gmail.com",
       "nomeCompleto": "Douglas Silva"
+    },
+    {
+      "id": 15,
+      "nomeCompleto": "Aurélio Mendez",
+      "email": "aurelio@gmail.com",
+      "cidadeId": "1"
     }
   ]
 }

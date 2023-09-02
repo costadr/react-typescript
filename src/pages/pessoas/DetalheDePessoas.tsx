@@ -1,27 +1,32 @@
-// import { LinearProgress } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Box, Grid, LinearProgress, Paper, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Form } from '@unform/web';
-import { FormHandles } from '@unform/core';
+import * as yup from 'yup';
 
+import { PessoasService } from '../../shared/services/api/pessoas/PessoasService';
+import { VTextField, VForm, useVForm, IVFormErrors } from '../../shared/forms';
 import { FerramentasDeDetalhe } from '../../shared/components';
 import { LayoutBaseDePagina } from '../../shared/layouts';
-import { useEffect, useRef, useState } from 'react';
-import { PessoasService } from '../../shared/services/api/pessoas/PessoasService';
-import { VTextField } from '../../shared/forms';
+
 
 interface IFormData {
   email: string;
-  cidadeId: string;
+  cidadeId: number;
   nomeCompleto: string;
 }
+const formValidationSchema: yup.Schema<IFormData> = yup.object().shape({
+  email: yup.string().required().email(),
+  cidadeId: yup.number().required(),
+  nomeCompleto: yup.string().required().min(3),
+});
 
 export const DetalheDePessoas: React.FC = () => {
+  const { formRef, save, saveAndClose, isSaveAndClose } = useVForm();
   const { id = 'nova' } = useParams<'id'>();
   const navigate = useNavigate();
 
-  const formRef = useRef<FormHandles>(null);
 
-  const [, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [nome, setNome] = useState('');
 
   useEffect(() => {
@@ -35,16 +40,69 @@ export const DetalheDePessoas: React.FC = () => {
           if (result instanceof Error) {
             alert(result.message);
             navigate('/pessoas');
-          } else{
+          } else {
             setNome(result.nomeCompleto);
-            console.log(result);
+            formRef.current?.setData(result);
           }
         });
+    } else {
+      formRef.current?.setData({
+        email: '',
+        cidadeId: '',
+        nomeCompleto: '',
+      });
     }
   }, [id]);
 
+
   const handleSave = (dados: IFormData) => {
-    console.log(dados);
+    formValidationSchema
+      .validate(dados, {abortEarly: false})
+      .then((dadosValidados) => {
+        setIsLoading(true);
+        
+        if (id === 'nova') {
+          PessoasService
+            .create(dadosValidados)
+            .then((result) => {
+              setIsLoading(false);
+
+              if (result instanceof Error) {
+                alert(result.message);
+              } else {
+                if (isSaveAndClose()) {
+                  navigate('/pessoas');
+                } else {
+                  navigate(`/pessoas/detalhe/${result}`);
+                }
+              }
+            });
+        } else {
+          PessoasService
+            .updateById(Number(id), { id: Number(id), ...dadosValidados })
+            .then((result) => {
+              setIsLoading(false);
+
+              if (result instanceof Error) {
+                alert(result.message);
+              } else {
+                if (isSaveAndClose()) {
+                  navigate('/pessoas');
+                }
+              }
+            });
+        }
+      })
+      .catch((errors: yup.ValidationError) => {
+        const validationErrors: IVFormErrors = {};
+
+        errors.inner.forEach(error => {
+          if (!error.path) return;
+
+          validationErrors[error.path] = error.message;
+        });
+        formRef.current?.setErrors(validationErrors);
+      });
   };
 
   const handleDelete = (id: number) => {
@@ -61,35 +119,78 @@ export const DetalheDePessoas: React.FC = () => {
     }
   };
 
+
   return (
-    <LayoutBaseDePagina 
-      titulo={id === 'nova' ? 'Nova pessoa': nome}
+    <LayoutBaseDePagina
+      titulo={id === 'nova' ? 'Nova pessoa' : nome}
       barraDeFerramentas={
-        <FerramentasDeDetalhe 
+        <FerramentasDeDetalhe
           textoBotaoNovo='Nova'
           mostrarBotaoSalvarEFechar
           mostrarBotaoNovo={id !== 'nova'}
           mostrarBotaoApagar={id !== 'nova'}
 
-          aoClicarEmSalvar={() => formRef.current?.submitForm()}
-          aoClicarEmSalvarEFechar={() => formRef.current?.submitForm()}
+          aoClicarEmSalvar={save}
+          aoClicarEmSalvarEFechar={saveAndClose}
           aoClicarEmVoltar={() => navigate('/pessoas')}
           aoClicarEmApagar={() => handleDelete(Number(id))}
           aoClicarEmNovo={() => navigate('/pessoas/detalhe/nova')}
         />
       }
     >
-      {/* {isLoading && (
-        <LinearProgress variant='indeterminate'/>
-      )} */}
+      <VForm ref={formRef} onSubmit={handleSave}>
+        <Box margin={1} display="flex" flexDirection="column" component={Paper} variant="outlined">
 
-      <Form ref={formRef} onSubmit={handleSave}>
-        <VTextField name='nomeCompleto' />
-        <VTextField name='email' />
-        <VTextField name='cidadeId' />
+          <Grid container direction="column" padding={2} spacing={2}>
 
-      </Form>
+            {isLoading && (
+              <Grid item>
+                <LinearProgress variant='indeterminate' />
+              </Grid>
+            )}
 
+            <Grid item>
+              <Typography variant='h6'>Geral</Typography>
+            </Grid>
+
+            <Grid container item direction="row" spacing={2}>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+                <VTextField
+                  fullWidth
+                  name='nomeCompleto'
+                  disabled={isLoading}
+                  label='Nome completo'
+                  onChange={e => setNome(e.target.value)}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container item direction="row" spacing={2}>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+                <VTextField
+                  fullWidth
+                  name='email'
+                  label='Email'
+                  disabled={isLoading}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container item direction="row" spacing={2}>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+                <VTextField
+                  fullWidth
+                  label='Cidade'
+                  name='cidadeId'
+                  disabled={isLoading}
+                />
+              </Grid>
+            </Grid>
+
+          </Grid>
+
+        </Box>
+      </VForm>
     </LayoutBaseDePagina>
   );
 };
