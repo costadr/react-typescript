@@ -4,7 +4,7 @@
       "id": 1,
       "nomeCompleto": "Juca Silva 4444",
       "email": "juca@gmail.com",
-      "cidadeId": 1
+      "cidadeId": 2
     },
     {
       "id": 4,
@@ -83,6 +83,26 @@
     {
       "id": 1,
       "nome": "Porto Alegre"
+    },
+    {
+      "nome": "Piracicaba",
+      "id": 2
+    },
+    {
+      "nome": "Novo Hamburgo",
+      "id": 3
+    },
+    {
+      "nome": "Itu",
+      "id": 4
+    },
+    {
+      "id": 5,
+      "nome": "Paulínia"
+    },
+    {
+      "nome": "São Carlos",
+      "id": 6
     }
   ]
 }
