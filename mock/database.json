@@ -104,5 +104,8 @@
       "nome": "São Carlos",
       "id": 6
     }
-  ]
+  ],
+  "auth": {
+    "accessToken": "aaaaaaaaa.bbbbbbbbb.cccccccccccccc"
+  }
 }
