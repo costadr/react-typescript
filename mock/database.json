@@ -78,5 +78,11 @@
       "email": "aurelio@gmail.com",
       "cidadeId": "1"
     }
+  ],
+  "cidades": [
+    {
+      "id": 1,
+      "nome": "Porto Alegre"
+    }
   ]
 }
